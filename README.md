@@ -3,7 +3,7 @@
 ## Клиент
 - Перейти в папку `testovoe/frontend`
 ```pwsh
-cd testovoe/frontend
+cd .\frontend\
 ```
 - Проинициализировать проект:
 ```pwsh
@@ -19,7 +19,7 @@ yarn run dev
 - Открыть дополнительный терминал
 - Перейти в папку `testovoe/api`
 ```pwsh
-cd testovoe/api
+cd .\api\
 ```
 - Проинициализировать проект:
 `yarn`
