@@ -6,7 +6,10 @@ export const getSeminars = async () => {
 		if (!response.ok) throw new Error('Ошибка получения данных')
 		return await response.json()
 	} catch (err) {
-		alert(err.message)
+		alert(
+			`Ошибка получения данных: ${err.message}. Попробуйте перезапустить сервер.`
+		)
+		return { error: err.message }
 	}
 }
 
