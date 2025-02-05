@@ -45,8 +45,14 @@
 	justify-content: center;
 	border-radius: 12px;
 	gap: 15px;
+	padding-block: 15px;
 	background-color: var(--secondary-background-color);
 	width: 99%;
 	height: 100%;
 	border: 2px var(--secondary-accent-color) solid;
+	h5 {
+		font-size: 18px;
+		border-bottom: 1px white solid;
+		margin: 5px;
+	}
 }

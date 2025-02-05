@@ -21,12 +21,8 @@
 }
 
 .modal__content {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
 	transform: scale(0.6);
 	width: 25%;
-	height: 25%;
 	transition: 0.2s all ease-in-out;
 	overflow-y: scroll;
 	max-height: 90%;

@@ -29,8 +29,16 @@
 	border-radius: 12px;
 
 	button {
+		background-color: #a3a3a3;
 		border-bottom-right-radius: 5px;
 		border-bottom-left-radius: 5px;
+		&:disabled {
+			background-color: gray;
+			cursor: default;
+		}
+		&:hover {
+			background-color: var(--accent-color);
+		}
 	}
 }
 
@@ -40,10 +48,4 @@
 	gap: 15px;
 	border-radius: 12px;
 	padding: 5px;
-}
-
-h5 {
-	font-size: 18px;
-	border-bottom: 1px white solid;
-	margin: 5px;
 }

@@ -6,7 +6,7 @@ export const getSeminars = async () => {
 		if (!response.ok) throw new Error('Ошибка получения данных')
 		return await response.json()
 	} catch (err) {
-		alert(
+		console.error(
 			`Ошибка получения данных: ${err.message}. Попробуйте перезапустить сервер.`
 		)
 		return { error: err.message }
@@ -19,8 +19,9 @@ export const deleteSeminar = async id => {
 			method: 'DELETE',
 		})
 		if (!response.ok) throw new Error('Ошибка удаления')
-	} catch (error) {
-		alert(`Ошибка ${error}`)
+	} catch (err) {
+		console.error(`Ошибка ${error.message}`)
+		return err.message
 	}
 }
 
@@ -37,7 +38,8 @@ export const updateSeminar = async (id, updatedData) => {
 		if (!response.ok) throw new Error('Ошибка обновления')
 
 		return await response.json()
-	} catch (error) {
-		alert(`Ошибка: ${error.message}`)
+	} catch (err) {
+		console.error(`Ошибка: ${error.message}`)
+		return err.message
 	}
 }

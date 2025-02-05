@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { RiEditFill } from 'react-icons/ri'
 import { updateSeminar } from '../../utils/api.js'
 import Dropdown from '../UI-Components/Drowdown/Dropdown.jsx'
@@ -18,41 +18,62 @@ function Seminar({
 	onClick,
 	setSeminars,
 }) {
-	const [customTitle, setCustomTitle] = useState(title)
-	const [customPhoto, setCustomPhoto] = useState(photo)
-	const [customDescription, setCustomDescription] = useState(description)
-
+	const [isUpdating, setIsUpdating] = useState(false)
+	const [updateError, setUpdateError] = useState('')
 	const [imgIsLoading, setImgIsLoading] = useState(true)
+
+	const [formData, setFormData] = useState({
+		title,
+		photo,
+		description,
+	})
 
 	const [modalIsActive, setModalIsActive] = useState(false)
 
-	const handleUpdateSeminar = async (e, id) => {
-		e.preventDefault()
-		try {
-			const updatedData = {
-				title: customTitle,
-				description: customDescription,
-				photo: customPhoto,
+	const handleInputChange = e => {
+		const { name, value } = e.target
+		setFormData(prev => ({ ...prev, [name]: value }))
+	}
+
+	const handleUpdateSeminar = useCallback(
+		async (e, id) => {
+			e.preventDefault()
+			setUpdateError('')
+
+			if (!formData.title.trim()) {
+				setUpdateError('Название не может быть пустым!')
+				return
 			}
 
-			const updatedSeminar = await updateSeminar(id, updatedData)
-			console.log(updatedSeminar)
+			setIsUpdating(true)
+			try {
+				const updatedSeminar = await updateSeminar(id, formData)
 
-			setSeminars(prev =>
-				prev.map(seminar => (seminar.id === id ? updatedSeminar : seminar))
-			)
-		} catch (error) {
-			alert(`Ошибка: ${error.message}`)
-		}
-		setModalIsActive(false)
-	}
+				if (!updatedSeminar)
+					throw new Error('Ошибка обновления. Попробуйте позже.')
+
+				setSeminars(prev =>
+					prev.map(seminar => (seminar.id === id ? updatedSeminar : seminar))
+				)
+			} catch (err) {
+				setUpdateError(err.message)
+			} finally {
+				setIsUpdating(false)
+				setModalIsActive(false)
+			}
+		},
+		[id, formData, setSeminars]
+	)
 
 	return (
 		<div className={style['seminar']}>
 			<div className={style['seminar__date-info']}>
 				<p>{`${date} в ${time}`}</p>
 				<div className={style['seminar__tools']}>
-					<RiEditFill onClick={() => setModalIsActive(true)} />
+					<RiEditFill
+						onClick={() => setModalIsActive(true)}
+						title='Редактировать семинар'
+					/>
 					<Dropdown title='Подтвердите удаление'>
 						<button onClick={() => onClick(id)}>Удалить</button>
 					</Dropdown>
@@ -75,20 +96,30 @@ function Seminar({
 			<Modal active={modalIsActive} setActive={setModalIsActive}>
 				<div className={style['seminar__editor']}>
 					<h5>{`Изменение семинара №${id}`}</h5>
-					<Form onSubmit={e => handleUpdateSeminar(e, id)}>
+
+					{updateError && <p>{updateError}</p>}
+					<Form
+						onSubmit={e => handleUpdateSeminar(e, id)}
+						disabled={isUpdating}
+					>
 						<input
-							value={customTitle}
-							onChange={e => setCustomTitle(e.target.value)}
+							name='title'
+							value={formData.title}
+							onChange={handleInputChange}
+							// required
 							maxLength={40}
 						/>
 						<input
-							value={customDescription}
-							onChange={e => setCustomDescription(e.target.value)}
+							name='description'
+							value={formData.description}
+							onChange={handleInputChange}
 							maxLength={100}
 						/>
 						<input
-							value={customPhoto}
-							onChange={e => setCustomPhoto(e.target.value)}
+							name='photo'
+							value={formData.photo}
+							onChange={handleInputChange}
+							type='url'
 						/>
 					</Form>
 				</div>
